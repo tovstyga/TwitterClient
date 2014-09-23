@@ -7,9 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "HomeTimelineTweet.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
+@property (strong, nonatomic) HomeTimelineTweet *tweet;
+
+-(void)setTweet:(HomeTimelineTweet *)tweet;
 
 @end

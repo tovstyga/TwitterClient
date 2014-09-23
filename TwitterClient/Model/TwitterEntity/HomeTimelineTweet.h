@@ -1,0 +1,21 @@
+//
+//  HomeTimelineTweet.h
+//  TwitterClient
+//
+//  Created by Alex Tovstyga on 9/22/14.
+//  Copyright (c) 2014 Alex Tovstyga. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+@interface HomeTimelineTweet : NSObject
+
+@property (strong, nonatomic) NSDate *createdAt;
+@property (strong, nonatomic) NSString *text;
+@property (strong, nonatomic) NSString *screenName;
+@property (strong, nonatomic) NSURL *profileimageURL;
+@property (strong, nonatomic) NSURL *URLinfo;
+@property (strong, nonatomic) UIImage *profileImage;
+@property (strong, nonatomic) NSString *tweetID;
+
+@end

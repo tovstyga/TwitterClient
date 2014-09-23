@@ -10,6 +10,10 @@
 
 @implementation AppDelegate
 
+-(void)setTweet:(HomeTimelineTweet *)tweet{
+    _tweet = tweet;
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.

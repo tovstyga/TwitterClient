@@ -21,6 +21,11 @@
 		15035B5019CAF5A400EF8B93 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15035B3219CAF5A400EF8B93 /* UIKit.framework */; };
 		15035B5819CAF5A400EF8B93 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 15035B5619CAF5A400EF8B93 /* InfoPlist.strings */; };
 		15035B5A19CAF5A400EF8B93 /* TwitterClientTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 15035B5919CAF5A400EF8B93 /* TwitterClientTests.m */; };
+		151DE0B519D0117A00BF8877 /* DataLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 151DE0B419D0117A00BF8877 /* DataLoader.m */; };
+		151DE0B919D0198C00BF8877 /* SearchMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 151DE0B819D0198C00BF8877 /* SearchMetadata.m */; };
+		151DE0C019D023DE00BF8877 /* HomeTimelineTweet.m in Sources */ = {isa = PBXBuildFile; fileRef = 151DE0BF19D023DE00BF8877 /* HomeTimelineTweet.m */; };
+		151DE0C319D0296F00BF8877 /* HomeTimelineTweetFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 151DE0C219D0296F00BF8877 /* HomeTimelineTweetFactory.m */; };
+		151DE0C619D04E2C00BF8877 /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 151DE0C519D04E2C00BF8877 /* WebViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +58,18 @@
 		15035B5519CAF5A400EF8B93 /* TwitterClientTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TwitterClientTests-Info.plist"; sourceTree = "<group>"; };
 		15035B5719CAF5A400EF8B93 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		15035B5919CAF5A400EF8B93 /* TwitterClientTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TwitterClientTests.m; sourceTree = "<group>"; };
+		151DE0B019D002DF00BF8877 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		151DE0B319D0117A00BF8877 /* DataLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataLoader.h; sourceTree = "<group>"; };
+		151DE0B419D0117A00BF8877 /* DataLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataLoader.m; sourceTree = "<group>"; };
+		151DE0B719D0198C00BF8877 /* SearchMetadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchMetadata.h; sourceTree = "<group>"; };
+		151DE0B819D0198C00BF8877 /* SearchMetadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchMetadata.m; sourceTree = "<group>"; };
+		151DE0BA19D01DA500BF8877 /* ObjectsFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjectsFactory.h; sourceTree = "<group>"; };
+		151DE0BE19D023DE00BF8877 /* HomeTimelineTweet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeTimelineTweet.h; sourceTree = "<group>"; };
+		151DE0BF19D023DE00BF8877 /* HomeTimelineTweet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeTimelineTweet.m; sourceTree = "<group>"; };
+		151DE0C119D0296F00BF8877 /* HomeTimelineTweetFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeTimelineTweetFactory.h; sourceTree = "<group>"; };
+		151DE0C219D0296F00BF8877 /* HomeTimelineTweetFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeTimelineTweetFactory.m; sourceTree = "<group>"; };
+		151DE0C419D04E2C00BF8877 /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewController.h; sourceTree = "<group>"; };
+		151DE0C519D04E2C00BF8877 /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,13 +129,15 @@
 		15035B3419CAF5A400EF8B93 /* TwitterClient */ = {
 			isa = PBXGroup;
 			children = (
+				15BB803619CAF83900EC2143 /* Controller */,
+				15BB803519CAF82E00EC2143 /* View */,
+				15BB803419CAF82300EC2143 /* Model */,
 				15035B3D19CAF5A400EF8B93 /* AppDelegate.h */,
 				15035B3E19CAF5A400EF8B93 /* AppDelegate.m */,
 				15035B4019CAF5A400EF8B93 /* Main.storyboard */,
-				15035B4319CAF5A400EF8B93 /* ViewController.h */,
-				15035B4419CAF5A400EF8B93 /* ViewController.m */,
 				15035B4619CAF5A400EF8B93 /* Images.xcassets */,
 				15035B3519CAF5A400EF8B93 /* Supporting Files */,
+				151DE0B019D002DF00BF8877 /* Constants.h */,
 			);
 			path = TwitterClient;
 			sourceTree = "<group>";
@@ -150,6 +169,48 @@
 				15035B5619CAF5A400EF8B93 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		151DE0B619D018EC00BF8877 /* TwitterEntity */ = {
+			isa = PBXGroup;
+			children = (
+				151DE0B719D0198C00BF8877 /* SearchMetadata.h */,
+				151DE0B819D0198C00BF8877 /* SearchMetadata.m */,
+				151DE0BE19D023DE00BF8877 /* HomeTimelineTweet.h */,
+				151DE0BF19D023DE00BF8877 /* HomeTimelineTweet.m */,
+			);
+			path = TwitterEntity;
+			sourceTree = "<group>";
+		};
+		15BB803419CAF82300EC2143 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				151DE0B619D018EC00BF8877 /* TwitterEntity */,
+				151DE0BA19D01DA500BF8877 /* ObjectsFactory.h */,
+				151DE0C119D0296F00BF8877 /* HomeTimelineTweetFactory.h */,
+				151DE0C219D0296F00BF8877 /* HomeTimelineTweetFactory.m */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		15BB803519CAF82E00EC2143 /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		15BB803619CAF83900EC2143 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				15035B4319CAF5A400EF8B93 /* ViewController.h */,
+				15035B4419CAF5A400EF8B93 /* ViewController.m */,
+				151DE0B319D0117A00BF8877 /* DataLoader.h */,
+				151DE0B419D0117A00BF8877 /* DataLoader.m */,
+				151DE0C419D04E2C00BF8877 /* WebViewController.h */,
+				151DE0C519D04E2C00BF8877 /* WebViewController.m */,
+			);
+			path = Controller;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -249,9 +310,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				151DE0C319D0296F00BF8877 /* HomeTimelineTweetFactory.m in Sources */,
 				15035B4519CAF5A400EF8B93 /* ViewController.m in Sources */,
 				15035B3F19CAF5A400EF8B93 /* AppDelegate.m in Sources */,
+				151DE0C619D04E2C00BF8877 /* WebViewController.m in Sources */,
 				15035B3B19CAF5A400EF8B93 /* main.m in Sources */,
+				151DE0B919D0198C00BF8877 /* SearchMetadata.m in Sources */,
+				151DE0B519D0117A00BF8877 /* DataLoader.m in Sources */,
+				151DE0C019D023DE00BF8877 /* HomeTimelineTweet.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -454,6 +520,7 @@
 				15035B5F19CAF5A400EF8B93 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		15035B6019CAF5A400EF8B93 /* Build configuration list for PBXNativeTarget "TwitterClientTests" */ = {
 			isa = XCConfigurationList;
@@ -462,6 +529,7 @@
 				15035B6219CAF5A400EF8B93 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
