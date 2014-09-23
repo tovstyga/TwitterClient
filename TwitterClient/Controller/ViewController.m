@@ -261,8 +261,10 @@ static bool isUserTweetPage;
         
         [self.tableView addSubview:self.overlayView];
         
-        [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
+        
     }
+    
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 -(void)configureImageView:(HomeTimelineTweet *)tweet{
