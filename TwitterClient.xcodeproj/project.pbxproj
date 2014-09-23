@@ -26,6 +26,7 @@
 		151DE0C019D023DE00BF8877 /* HomeTimelineTweet.m in Sources */ = {isa = PBXBuildFile; fileRef = 151DE0BF19D023DE00BF8877 /* HomeTimelineTweet.m */; };
 		151DE0C319D0296F00BF8877 /* HomeTimelineTweetFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 151DE0C219D0296F00BF8877 /* HomeTimelineTweetFactory.m */; };
 		151DE0C619D04E2C00BF8877 /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 151DE0C519D04E2C00BF8877 /* WebViewController.m */; };
+		15EAD98019D160D20058CC4D /* UserTimelineTweetFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 15EAD97F19D160D20058CC4D /* UserTimelineTweetFactory.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +71,8 @@
 		151DE0C219D0296F00BF8877 /* HomeTimelineTweetFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeTimelineTweetFactory.m; sourceTree = "<group>"; };
 		151DE0C419D04E2C00BF8877 /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewController.h; sourceTree = "<group>"; };
 		151DE0C519D04E2C00BF8877 /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewController.m; sourceTree = "<group>"; };
+		15EAD97E19D160D20058CC4D /* UserTimelineTweetFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserTimelineTweetFactory.h; path = "/Users/alex.tovstyga/Desktop/twitter client/TwitterClient/TwitterClient/Model/Factory/UserTimelineTweetFactory.h"; sourceTree = "<absolute>"; };
+		15EAD97F19D160D20058CC4D /* UserTimelineTweetFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UserTimelineTweetFactory.m; path = "/Users/alex.tovstyga/Desktop/twitter client/TwitterClient/TwitterClient/Model/Factory/UserTimelineTweetFactory.m"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,13 +185,23 @@
 			path = TwitterEntity;
 			sourceTree = "<group>";
 		};
+		156DDE0219D18B29001C72D1 /* Factory */ = {
+			isa = PBXGroup;
+			children = (
+				15EAD97E19D160D20058CC4D /* UserTimelineTweetFactory.h */,
+				15EAD97F19D160D20058CC4D /* UserTimelineTweetFactory.m */,
+				151DE0C119D0296F00BF8877 /* HomeTimelineTweetFactory.h */,
+				151DE0C219D0296F00BF8877 /* HomeTimelineTweetFactory.m */,
+			);
+			path = Factory;
+			sourceTree = "<group>";
+		};
 		15BB803419CAF82300EC2143 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				156DDE0219D18B29001C72D1 /* Factory */,
 				151DE0B619D018EC00BF8877 /* TwitterEntity */,
 				151DE0BA19D01DA500BF8877 /* ObjectsFactory.h */,
-				151DE0C119D0296F00BF8877 /* HomeTimelineTweetFactory.h */,
-				151DE0C219D0296F00BF8877 /* HomeTimelineTweetFactory.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -312,6 +325,7 @@
 			files = (
 				151DE0C319D0296F00BF8877 /* HomeTimelineTweetFactory.m in Sources */,
 				15035B4519CAF5A400EF8B93 /* ViewController.m in Sources */,
+				15EAD98019D160D20058CC4D /* UserTimelineTweetFactory.m in Sources */,
 				15035B3F19CAF5A400EF8B93 /* AppDelegate.m in Sources */,
 				151DE0C619D04E2C00BF8877 /* WebViewController.m in Sources */,
 				15035B3B19CAF5A400EF8B93 /* main.m in Sources */,

@@ -34,6 +34,8 @@
 
 #define HOME_TIMELINE_URL @"https://api.twitter.com/1.1/statuses/home_timeline.json"
 
+#define USER_TIMELINE_URL @"https://api.twitter.com/1.1/statuses/user_timeline.json"
+
 #define DATE_FORMAT_STRING @"ccc MMM d HH:mm:ss Z yyyy"
 
 #define CELL_IDENTIFIER @"Cell"
@@ -43,6 +45,8 @@
 // param
 
 #define COUNT @"count"
+
+#define COUNT_VALUE @"100"
 
 #define SINCE_ID @"since_id"
 
@@ -54,5 +58,12 @@
 
 #define ERROR_ACCESS @"Error. Access denied."
 
+#define ERROR_LIMIT_QUERIES @"exceeding the limit of queries"
+
 // end error log message
+
+#define HOME_PAGE @"Home page"
+
+#define USER_TWEET @"User tweet"
+
 @end

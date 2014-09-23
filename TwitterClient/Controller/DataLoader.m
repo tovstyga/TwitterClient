@@ -20,6 +20,7 @@
             parameters:(NSMutableDictionary *)parameters
                creater:(id<ObjectsFactory>)creater{
     
+    
     ACAccountStore *account = [[ACAccountStore alloc] init];
     ACAccountType *accountType = [account accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
     [account requestAccessToAccountsWithType:accountType
@@ -42,6 +43,8 @@
                  
                  [posts performRequestWithHandler:^(NSData *response, NSHTTPURLResponse *urlResponse, NSError *error){
                      
+                   
+                     
                      NSDictionary *templateDict = [NSJSONSerialization JSONObjectWithData:response
                                                                                   options:NSJSONReadingMutableLeaves
                                                                                     error:&error];
@@ -51,6 +54,7 @@
                          [DataLoader pushNotification:creater];
                          
                      } else {
+                         
                          [creater createObjectsWithData:templateDict];
                      }
                  }];

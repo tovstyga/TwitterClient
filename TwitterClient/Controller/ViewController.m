@@ -9,25 +9,32 @@
 #import "ViewController.h"
 #import "DataLoader.h"
 #import "HomeTimelineTweetFactory.h"
+#import "UserTimelineTweetFactory.h"
 #import "HomeTimelineTweet.h"
 #import "Constants.h"
 #import "AppDelegate.h"
 
 @interface ViewController ()
 
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *swapButton;
 @property (strong, atomic) NSMutableArray *data;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) UIRefreshControl *refresh;
+@property (strong, atomic) NSString *actualURLString;
 
 @end
 
 @implementation ViewController
+
+static bool isUserTweetPage;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
     _data = [[NSMutableArray alloc] init];
+    
+    self.actualURLString = HOME_TIMELINE_URL;
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(dataLoadnotification:)
@@ -39,13 +46,18 @@
                                                  name:IMAGE_LOADED_NOTIFICATION
                                                object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(dataLoadnotification:)
+                                                 name:[UserTimelineTweetFactory notificationIdentifier]
+                                               object:nil];
+    
     
     self.refresh = [[UIRefreshControl alloc]init];
     [self.tableView addSubview:self.refresh];
     [self.refresh addTarget:self
                      action:@selector(refreshTable)
            forControlEvents:UIControlEventValueChanged];
-
+    
     [self updateData];
     
 	// Do any additional setup after loading the view, typically from a nib.
@@ -79,36 +91,19 @@
         dispatch_sync(dispatch_get_main_queue(), ^{
             NSMutableArray *newData = (NSMutableArray *)notification.object;
             if (newData.count > 0){
-                [newData addObjectsFromArray:self.data];
-        
-                self.data = newData;
+                if (isUserTweetPage){
+                    self.data = newData;
+                } else {
+                    [newData addObjectsFromArray:self.data];
+                    self.data = newData;
+                }
                 
                 [self.tableView reloadData];
             }
             [self.refresh endRefreshing];
+            self.swapButton.enabled = YES;
         });
     
-}
-
--(void)updateData{
-    NSURL *requestAPI = [NSURL URLWithString:HOME_TIMELINE_URL];
-    
-    HomeTimelineTweetFactory *factory = [[HomeTimelineTweetFactory alloc] init];
-    
-    NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
-    
-    [parameters setObject:@"100" forKey:COUNT];
-    
-    if (self.data.count > 0) {
-        HomeTimelineTweet *tweet = [self.data firstObject];
-        [parameters setObject:tweet.tweetID forKey:SINCE_ID];
-    }
-    
-    [DataLoader loadDataFromURL:requestAPI parameters:parameters creater:factory];
-}
-
-- (void)refreshTable{
-        [self updateData];
 }
 
 -(void)imageLoadnotification:(NSNotification *)notification{
@@ -133,6 +128,52 @@
                                   withRowAnimation:UITableViewRowAnimationNone];
         });
     }
+}
+
+
+-(void)updateData{
+    NSURL *requestAPI = [NSURL URLWithString:[self actualURLString]];
+    
+    id <ObjectsFactory> creater = nil;
+    
+    if (isUserTweetPage) {
+        creater = [[UserTimelineTweetFactory alloc] init];
+    } else {
+        creater = [[HomeTimelineTweetFactory alloc] init];
+    }
+    
+    NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
+    
+    [parameters setObject:COUNT_VALUE forKey:COUNT];
+    
+    if ((self.data.count > 0) && !isUserTweetPage) {
+        HomeTimelineTweet *tweet = [self.data firstObject];
+        [parameters setObject:tweet.tweetID forKey:SINCE_ID];
+    }
+    
+    [DataLoader loadDataFromURL:requestAPI parameters:parameters creater:creater];
+}
+
+- (void)refreshTable{
+    self.swapButton.enabled = NO;
+    [self updateData];
+}
+
+
+- (IBAction)swapBtnClic:(UIBarButtonItem *)sender {
+    if (!isUserTweetPage){
+        [self setTitle:USER_TWEET];
+        self.swapButton.title = HOME_PAGE;
+        self.actualURLString = USER_TIMELINE_URL;
+        isUserTweetPage = YES;
+    } else {
+        [self setTitle:HOME_PAGE];
+        self.swapButton.title = USER_TWEET;
+        self.actualURLString = HOME_TIMELINE_URL;
+        isUserTweetPage = NO;
+    }
+    self.swapButton.enabled = NO;
+    [self updateData];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView

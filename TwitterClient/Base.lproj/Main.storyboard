@@ -57,8 +57,15 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Home page" id="NVR-Wo-Dna"/>
+                    <navigationItem key="navigationItem" title="Home page" id="NVR-Wo-Dna">
+                        <barButtonItem key="rightBarButtonItem" title="User tweet" id="RBN-A4-LQn">
+                            <connections>
+                                <action selector="swapBtnClic:" destination="vXZ-lx-hvc" id="fdh-wQ-JEx"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
+                        <outlet property="swapButton" destination="RBN-A4-LQn" id="VTq-DN-IWE"/>
                         <outlet property="tableView" destination="kVT-f4-su6" id="J3h-5C-WAJ"/>
                     </connections>
                 </viewController>
