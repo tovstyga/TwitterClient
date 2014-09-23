@@ -11,7 +11,7 @@
 
 @interface HomeTimelineTweet()
 
-@property (atomic) BOOL loadInProcess;
+//@property (atomic) BOOL loadInProcess;
 
 @end
 
@@ -22,23 +22,45 @@
 -(UIImage *)profileImage{
     
 
-    if (!(_profileImage) && !(self.loadInProcess)){
-        self.loadInProcess = YES;
-        [self performSelectorInBackground:@selector(loadImageInBackground) withObject:nil];
+    if (!(_profileImage)/* && !(self.loadInProcess)*/){
+        //self.loadInProcess = YES;
+        [self performSelectorInBackground:@selector(loadImageInBackground:) withObject:IMAGE_LOADED_NOTIFICATION];
     }
     return _profileImage;
 }
 
--(void)loadImageInBackground{
-    NSURLRequest *request = [NSURLRequest requestWithURL:self.profileimageURL];
+-(UIImage *)mediaImage{
+    if (!(_mediaImage)/* && !(self.loadInProcess)*/){
+     //   self.loadInProcess = YES;
+        [self performSelectorInBackground:@selector(loadImageInBackground:) withObject:MEDIA_LOADED_NOTIFICATION];
+    }
+    
+    return _mediaImage;
+}
+
+-(void)loadImageInBackground:(NSString *)notificationName{
+    NSURLRequest *request = nil;
+    
+    if ([notificationName isEqualToString:IMAGE_LOADED_NOTIFICATION]){
+        request = [NSURLRequest requestWithURL:self.profileimageURL];
+    } else {
+        request = [NSURLRequest requestWithURL:self.mediaURL];
+    }
+   
     NSError *error = nil;
     NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:&error];
     if (error == nil){
-        _profileImage = [UIImage imageWithData:data];
-        [[NSNotificationCenter defaultCenter] postNotificationName:IMAGE_LOADED_NOTIFICATION object:self];
+        if ([notificationName isEqualToString:IMAGE_LOADED_NOTIFICATION]){
+            _profileImage = [UIImage imageWithData:data];
+        } else {
+            _mediaImage = [UIImage imageWithData:data];
+        }
+        [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:self];
     }
-    self.loadInProcess = NO;
+ //   self.loadInProcess = NO;
 }
+
+
 
 
 @end

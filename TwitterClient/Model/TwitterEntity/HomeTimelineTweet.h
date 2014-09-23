@@ -17,5 +17,7 @@
 @property (strong, nonatomic) NSURL *URLinfo;
 @property (strong, nonatomic) UIImage *profileImage;
 @property (strong, nonatomic) NSString *tweetID;
+@property (strong, nonatomic) NSURL *mediaURL;
+@property (strong, nonatomic) UIImage *mediaImage;
 
 @end

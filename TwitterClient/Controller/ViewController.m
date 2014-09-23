@@ -22,6 +22,10 @@
 @property (strong, nonatomic) UIRefreshControl *refresh;
 @property (strong, atomic) NSString *actualURLString;
 
+@property (strong, nonatomic) UIView *overlayView;
+@property (strong, nonatomic) UIActivityIndicatorView *indicator;
+@property (strong, nonatomic) UIImageView *overlayImageView;
+
 @end
 
 @implementation ViewController
@@ -51,6 +55,10 @@ static bool isUserTweetPage;
                                                  name:[UserTimelineTweetFactory notificationIdentifier]
                                                object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(mediaLoadnotification:)
+                                                 name:MEDIA_LOADED_NOTIFICATION
+                                               object:nil];
     
     self.refresh = [[UIRefreshControl alloc]init];
     [self.tableView addSubview:self.refresh];
@@ -130,6 +138,19 @@ static bool isUserTweetPage;
     }
 }
 
+-(void)mediaLoadnotification:(NSNotification *)notification{
+    
+    HomeTimelineTweet *tweet = (HomeTimelineTweet *)notification.object;
+    
+    [self configureImageView:tweet];
+    
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        [self.indicator stopAnimating];
+        [self.overlayView addSubview:self.overlayImageView];
+    });
+    
+}
+
 
 -(void)updateData{
     NSURL *requestAPI = [NSURL URLWithString:[self actualURLString]];
@@ -202,5 +223,64 @@ static bool isUserTweetPage;
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    
+    HomeTimelineTweet *tw = self.data[indexPath.row];
+    
+    if (tw.mediaURL){
+       
+        self.tableView.scrollEnabled = NO;
+        self.navigationItem.rightBarButtonItem.enabled = NO;
+        
+        self.overlayView = [[UIView alloc] init];
+        self.overlayView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+        self.overlayView.frame = self.tableView.bounds;
+        
+        
+        if (tw.mediaImage){
+            [self configureImageView:tw];
+            [self.overlayView addSubview:self.overlayImageView];
+            
+        } else {
+            CGRect frame = self.overlayView.frame;
+            
+            self.indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+            
+            self.indicator.center = CGPointMake(frame.size.width/2, frame.size.height/2);
+            
+            [self.overlayView addSubview:self.indicator];
+            
+            [self.indicator startAnimating];
+        }
+        
+        UITapGestureRecognizer *singleFingerTap =
+        [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                action:@selector(handleSingleTap:)];
+        [self.overlayView addGestureRecognizer:singleFingerTap];
+        
+        [self.tableView addSubview:self.overlayView];
+        
+        [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
+    }
+}
 
+-(void)configureImageView:(HomeTimelineTweet *)tweet{
+    CGRect frame = self.view.frame;
+    
+    float coef = tweet.mediaImage.size.width / frame.size.width;
+    float y = (frame.size.height - (tweet.mediaImage.size.height/coef))/2;
+    
+    self.overlayImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, y, frame.size.width, tweet.mediaImage.size.height/coef)];
+    self.overlayImageView.image = tweet.mediaImage;
+}
+
+- (void)handleSingleTap:(UITapGestureRecognizer *)recognizer {
+    
+    self.navigationItem.rightBarButtonItem.enabled = YES;
+    self.tableView.scrollEnabled = YES;
+
+    [recognizer.view removeFromSuperview];
+    
+}
 @end

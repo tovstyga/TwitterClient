@@ -24,11 +24,16 @@
 
 #define ENTITIES @"entities"
 
+#define MEDIA @"media"
+
+#define MEDIA_URL @"media_url"
+
 #define URLS @"urls"
 
 #define kURL @"url"
 
 #define ID @"id_str"
+
 
 // end JSON keys
 
@@ -41,6 +46,8 @@
 #define CELL_IDENTIFIER @"Cell"
 
 #define IMAGE_LOADED_NOTIFICATION @"image loaded"
+
+#define MEDIA_LOADED_NOTIFICATION @"media loaded"
 
 // param
 

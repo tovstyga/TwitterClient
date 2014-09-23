@@ -42,8 +42,11 @@
             
             NSDictionary *entities = [dict objectForKey:ENTITIES];
             NSArray *urls = [entities objectForKey:URLS];
+            NSArray *media = [entities objectForKey:MEDIA];
             NSDictionary *tmp = [urls firstObject];
+            NSDictionary *mediaTemp = [media firstObject];
             tweet.URLinfo = [NSURL URLWithString:[tmp objectForKey:kURL]];
+            tweet.mediaURL = [NSURL URLWithString:[mediaTemp objectForKey:MEDIA_URL]];
             
             [objects addObject:tweet];
 
