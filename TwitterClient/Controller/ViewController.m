@@ -13,6 +13,7 @@
 #import "HomeTimelineTweet.h"
 #import "Constants.h"
 #import "AppDelegate.h"
+#import "TweetCustomCell.h"
 
 @interface ViewController ()
 
@@ -25,12 +26,14 @@
 @property (strong, nonatomic) UIView *overlayView;
 @property (strong, nonatomic) UIActivityIndicatorView *indicator;
 @property (strong, nonatomic) UIImageView *overlayImageView;
+@property (strong, nonatomic) NSNotification *lastImageShowNotification;
 
 @end
 
 @implementation ViewController
 
 static bool isUserTweetPage;
+static bool imageShow;
 
 - (void)viewDidLoad
 {
@@ -46,11 +49,6 @@ static bool isUserTweetPage;
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(imageLoadnotification:)
-                                                 name:IMAGE_LOADED_NOTIFICATION
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(dataLoadnotification:)
                                                  name:[UserTimelineTweetFactory notificationIdentifier]
                                                object:nil];
@@ -59,6 +57,17 @@ static bool isUserTweetPage;
                                              selector:@selector(mediaLoadnotification:)
                                                  name:MEDIA_LOADED_NOTIFICATION
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(showImageNotificationHandler:)
+                                                 name:SHOW_IMAGE_NOTIFICATION
+                                               object:nil];
+    
+    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(orientationChanged:)
+                                                 name:UIDeviceOrientationDidChangeNotification
+                                               object:[UIDevice currentDevice]];
     
     self.refresh = [[UIRefreshControl alloc]init];
     [self.tableView addSubview:self.refresh];
@@ -95,6 +104,21 @@ static bool isUserTweetPage;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+- (void) orientationChanged:(NSNotification *)note
+{
+ 
+    if ((self.lastImageShowNotification) && (imageShow)){
+        self.overlayImageView.image = nil;
+        self.overlayImageView = nil;
+        self.indicator = nil;
+        
+        [self.overlayView removeFromSuperview];
+        self.overlayView = nil;
+        [self showImageNotificationHandler:self.lastImageShowNotification];
+    }
+    
+}
+
 -(void)dataLoadnotification:(NSNotification *)notification{
         dispatch_sync(dispatch_get_main_queue(), ^{
             NSMutableArray *newData = (NSMutableArray *)notification.object;
@@ -109,47 +133,12 @@ static bool isUserTweetPage;
                 [self.tableView reloadData];
             }
             [self.refresh endRefreshing];
-            self.swapButton.enabled = YES;
+          //  self.swapButton.enabled = YES;
         });
     
 }
 
--(void)imageLoadnotification:(NSNotification *)notification{
-    if (notification.object == nil)
-        return;
-    
-    HomeTimelineTweet *tw = (HomeTimelineTweet *)notification.object;
-    
-    __block NSIndexPath *indexPath = nil;
-    
-    [self.data enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        if ((HomeTimelineTweet *)obj == tw){
-            indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
-            *stop = YES;
-        }
-    }];
-    
-    if (indexPath != nil){
-        dispatch_sync(dispatch_get_main_queue(),^{
-            
-            [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-                                  withRowAnimation:UITableViewRowAnimationNone];
-        });
-    }
-}
 
--(void)mediaLoadnotification:(NSNotification *)notification{
-    
-    HomeTimelineTweet *tweet = (HomeTimelineTweet *)notification.object;
-    
-    [self configureImageView:tweet];
-    
-    dispatch_sync(dispatch_get_main_queue(), ^{
-        [self.indicator stopAnimating];
-        [self.overlayView addSubview:self.overlayImageView];
-    });
-    
-}
 
 
 -(void)updateData{
@@ -197,6 +186,8 @@ static bool isUserTweetPage;
     [self updateData];
 }
 
+
+#pragma mark UITableView methods
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1;
@@ -213,23 +204,73 @@ static bool isUserTweetPage;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CELL_IDENTIFIER forIndexPath:indexPath];
+    TweetCustomCell *cell = [tableView dequeueReusableCellWithIdentifier:CELL_IDENTIFIER forIndexPath:indexPath];
     HomeTimelineTweet *tweet = [self.data objectAtIndex:[indexPath row]];
     
-    cell.textLabel.text = tweet.screenName;
-    cell.detailTextLabel.text = tweet.text;
-    cell.imageView.image = tweet.profileImage;
+    [cell configureCell:tweet];
     
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+
+#pragma mark Show Image Methods
+
+-(void)mediaLoadnotification:(NSNotification *)notification{
     
-    HomeTimelineTweet *tw = self.data[indexPath.row];
+    HomeTimelineTweet *tweet = (HomeTimelineTweet *)notification.object;
+    
+    [self configureImageView:tweet];
+    
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        
+        [self.overlayView addSubview:self.overlayImageView];
+        
+        [self.indicator stopAnimating];
+        
+        [self.overlayView setNeedsDisplay];
+        
+    });
+    
+}
+
+-(void)configureImageView:(HomeTimelineTweet *)tweet{
+    CGRect frame = self.view.frame;
+    
+    float coef = tweet.mediaImage.size.width / frame.size.width;
+    float y = (frame.size.height - (tweet.mediaImage.size.height/coef))/2;
+    
+    self.overlayImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, y, frame.size.width, tweet.mediaImage.size.height/coef)];
+    [self.overlayImageView setImage:tweet.mediaImage];
+    
+}
+
+- (void)handleSingleTap:(UITapGestureRecognizer *)recognizer {
+    
+  //  self.navigationItem.rightBarButtonItem.enabled = YES;
+    self.tableView.scrollEnabled = YES;
+    self.overlayImageView.image = nil;
+    self.overlayImageView = nil;
+    self.indicator = nil;
+    
+    [recognizer.view removeFromSuperview];
+    self.overlayView = nil;
+    
+    imageShow = NO;
+}
+
+-(void)showImageNotificationHandler:(NSNotification *)notification{
+    HomeTimelineTweet *tw = notification.object;
+    self.lastImageShowNotification = notification;
     
     if (tw.mediaURL){
-       
+        
+        imageShow = YES;
+        
         self.tableView.scrollEnabled = NO;
         self.navigationItem.rightBarButtonItem.enabled = NO;
         
@@ -264,25 +305,6 @@ static bool isUserTweetPage;
         
     }
     
-    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
--(void)configureImageView:(HomeTimelineTweet *)tweet{
-    CGRect frame = self.view.frame;
-    
-    float coef = tweet.mediaImage.size.width / frame.size.width;
-    float y = (frame.size.height - (tweet.mediaImage.size.height/coef))/2;
-    
-    self.overlayImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, y, frame.size.width, tweet.mediaImage.size.height/coef)];
-    self.overlayImageView.image = tweet.mediaImage;
-}
-
-- (void)handleSingleTap:(UITapGestureRecognizer *)recognizer {
-    
-    self.navigationItem.rightBarButtonItem.enabled = YES;
-    self.tableView.scrollEnabled = YES;
-
-    [recognizer.view removeFromSuperview];
-    
-}
 @end

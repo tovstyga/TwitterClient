@@ -43,6 +43,8 @@
 
 #define DATE_FORMAT_STRING @"ccc MMM d HH:mm:ss Z yyyy"
 
+#define DATE_FORMAT_DISPLAY_STRING @"HH:mm:ss d MMM yyyy"
+
 #define CELL_IDENTIFIER @"Cell"
 
 #define IMAGE_LOADED_NOTIFICATION @"image loaded"
@@ -53,7 +55,7 @@
 
 #define COUNT @"count"
 
-#define COUNT_VALUE @"100"
+#define COUNT_VALUE @"200"
 
 #define SINCE_ID @"since_id"
 
@@ -72,5 +74,7 @@
 #define HOME_PAGE @"Home page"
 
 #define USER_TWEET @"User tweet"
+
+#define SHOW_IMAGE_NOTIFICATION @"how image"
 
 @end
