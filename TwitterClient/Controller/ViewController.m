@@ -28,6 +28,7 @@
 @property (strong, nonatomic) UIImageView *overlayImageView;
 @property (strong, nonatomic) NSNotification *lastImageShowNotification;
 
+
 @end
 
 @implementation ViewController
@@ -38,6 +39,8 @@ static bool imageShow;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
     
     _data = [[NSMutableArray alloc] init];
     
@@ -88,6 +91,8 @@ static bool imageShow;
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
+   
+    
     HomeTimelineTweet *tw = nil;
     
     UITableViewCell *cell = (UITableViewCell *)sender;
@@ -108,12 +113,8 @@ static bool imageShow;
 {
  
     if ((self.lastImageShowNotification) && (imageShow)){
-        self.overlayImageView.image = nil;
-        self.overlayImageView = nil;
-        self.indicator = nil;
-        
-        [self.overlayView removeFromSuperview];
-        self.overlayView = nil;
+      
+        [self closeImage];
         [self showImageNotificationHandler:self.lastImageShowNotification];
     }
     
@@ -234,8 +235,9 @@ static bool imageShow;
         
         [self.overlayView setNeedsDisplay];
         
+        [self.tableView setNeedsDisplay];
+        
     });
-    
 }
 
 -(void)configureImageView:(HomeTimelineTweet *)tweet{
@@ -249,62 +251,70 @@ static bool imageShow;
     
 }
 
+-(void)closeImage{
+    
+    
+    
+        self.tableView.scrollEnabled = YES;
+        [self.indicator stopAnimating];
+        [self.indicator removeFromSuperview];
+        [self.overlayView removeFromSuperview];
+    
+        imageShow = NO;
+    
+}
+
 - (void)handleSingleTap:(UITapGestureRecognizer *)recognizer {
     
   //  self.navigationItem.rightBarButtonItem.enabled = YES;
-    self.tableView.scrollEnabled = YES;
-    self.overlayImageView.image = nil;
-    self.overlayImageView = nil;
-    self.indicator = nil;
-    
-    [recognizer.view removeFromSuperview];
-    self.overlayView = nil;
-    
-    imageShow = NO;
+ 
+    [self closeImage];
 }
 
 -(void)showImageNotificationHandler:(NSNotification *)notification{
-    HomeTimelineTweet *tw = notification.object;
-    self.lastImageShowNotification = notification;
     
-    if (tw.mediaURL){
+        HomeTimelineTweet *tw = notification.object;
+        self.lastImageShowNotification = notification;
+    
+        if (tw.mediaURL){
         
-        imageShow = YES;
+            imageShow = YES;
         
-        self.tableView.scrollEnabled = NO;
-        self.navigationItem.rightBarButtonItem.enabled = NO;
+            self.tableView.scrollEnabled = NO;
+            self.navigationItem.rightBarButtonItem.enabled = NO;
         
-        self.overlayView = [[UIView alloc] init];
-        self.overlayView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-        self.overlayView.frame = self.tableView.bounds;
+            self.overlayView = [[UIView alloc] init];
+            self.overlayView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+            self.overlayView.frame = self.tableView.bounds;
         
         
-        if (tw.mediaImage){
-            [self configureImageView:tw];
-            [self.overlayView addSubview:self.overlayImageView];
+            if (tw.mediaImage){
+                [self configureImageView:tw];
+                [self.overlayView addSubview:self.overlayImageView];
             
-        } else {
-            CGRect frame = self.overlayView.frame;
+            } else {
+                
+                CGRect frame = self.overlayView.frame;
             
-            self.indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+                self.indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
             
-            self.indicator.center = CGPointMake(frame.size.width/2, frame.size.height/2);
+                self.indicator.center = CGPointMake(frame.size.width/2, frame.size.height/2);
             
-            [self.overlayView addSubview:self.indicator];
+                [self.overlayView addSubview:self.indicator];
             
-            [self.indicator startAnimating];
-        }
+                [self.indicator startAnimating];
+            }
         
-        UITapGestureRecognizer *singleFingerTap =
-        [[UITapGestureRecognizer alloc] initWithTarget:self
+            UITapGestureRecognizer *singleFingerTap =
+            [[UITapGestureRecognizer alloc] initWithTarget:self
                                                 action:@selector(handleSingleTap:)];
-        [self.overlayView addGestureRecognizer:singleFingerTap];
+            [self.overlayView addGestureRecognizer:singleFingerTap];
         
-        [self.tableView addSubview:self.overlayView];
+            [self.tableView addSubview:self.overlayView];
         
         
-    }
-    
+        }
+   
 }
 
 @end
