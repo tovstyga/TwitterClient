@@ -24,6 +24,7 @@
 @property (strong, atomic) NSString *actualURLString;
 
 @property (strong, nonatomic) UIView *overlayView;
+@property (strong, nonatomic) UIView *overlayLockView;
 @property (strong, nonatomic) UIActivityIndicatorView *indicator;
 @property (strong, nonatomic) UIImageView *overlayImageView;
 @property (strong, nonatomic) NSNotification *lastImageShowNotification;
@@ -39,6 +40,8 @@ static bool imageShow;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    
     
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
     
@@ -81,6 +84,13 @@ static bool imageShow;
     [self updateData];
     
 	// Do any additional setup after loading the view, typically from a nib.
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    
+    [super viewWillAppear:animated];
+   if (self.overlayLockView == nil)
+       [self showLockView:NO];
 }
 
 - (void)didReceiveMemoryWarning
@@ -134,13 +144,11 @@ static bool imageShow;
                 [self.tableView reloadData];
             }
             [self.refresh endRefreshing];
+            [self closeLockView];
           //  self.swapButton.enabled = YES;
         });
     
 }
-
-
-
 
 -(void)updateData{
     NSURL *requestAPI = [NSURL URLWithString:[self actualURLString]];
@@ -223,52 +231,90 @@ static bool imageShow;
 
 -(void)mediaLoadnotification:(NSNotification *)notification{
     
-    HomeTimelineTweet *tweet = (HomeTimelineTweet *)notification.object;
+    [self closeLockView];
+    [self showImageNotificationHandler:[self lastImageShowNotification]];
     
-    [self configureImageView:tweet];
-    
-    dispatch_sync(dispatch_get_main_queue(), ^{
-        
-        [self.overlayView addSubview:self.overlayImageView];
-        
-        [self.indicator stopAnimating];
-        
-        [self.overlayView setNeedsDisplay];
-        
-        [self.tableView setNeedsDisplay];
-        
-    });
 }
 
--(void)configureImageView:(HomeTimelineTweet *)tweet{
+-(void)configureImageView:(UIImage *)img{
     CGRect frame = self.view.frame;
     
-    float coef = tweet.mediaImage.size.width / frame.size.width;
-    float y = (frame.size.height - (tweet.mediaImage.size.height/coef))/2;
+    float coef = img.size.width / frame.size.width;
+    float y = (frame.size.height - (img.size.height/coef))/2;
     
-    self.overlayImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, y, frame.size.width, tweet.mediaImage.size.height/coef)];
-    [self.overlayImageView setImage:tweet.mediaImage];
-    
-}
-
--(void)closeImage{
-    
-    
-    
-        self.tableView.scrollEnabled = YES;
-        [self.indicator stopAnimating];
-        [self.indicator removeFromSuperview];
-        [self.overlayView removeFromSuperview];
-    
-        imageShow = NO;
+    self.overlayImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, y, frame.size.width, img.size.height/coef)];
+    [self.overlayImageView setImage:img];
     
 }
 
 - (void)handleSingleTap:(UITapGestureRecognizer *)recognizer {
-    
-  //  self.navigationItem.rightBarButtonItem.enabled = YES;
  
     [self closeImage];
+    [self closeLockView];
+}
+
+-(void)showLockView:(bool)closeTap{
+    
+    imageShow = YES;
+    
+    self.tableView.scrollEnabled = NO;
+
+    self.overlayLockView = [[UIView alloc] init];
+    self.overlayLockView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+    self.overlayLockView.frame = self.tableView.bounds;
+    
+    CGRect frame = self.overlayLockView.frame;
+    self.indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    self.indicator.center = CGPointMake(frame.size.width/2, frame.size.height/2);
+    [self.overlayLockView addSubview:self.indicator];
+    [self.indicator startAnimating];
+    
+    if (closeTap){
+        UITapGestureRecognizer *singleFingerTap =
+        [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                action:@selector(handleSingleTap:)];
+        [self.overlayLockView addGestureRecognizer:singleFingerTap];
+    }
+    
+    if (self.overlayImageView == nil)
+        [self.tableView addSubview:self.overlayLockView];
+    
+}
+
+-(void)closeLockView{
+    self.tableView.scrollEnabled = YES;
+    [self.indicator stopAnimating];
+    [self.overlayLockView removeFromSuperview];
+    imageShow = NO;
+}
+
+-(void)showImage:(UIImage *)img{
+    imageShow = YES;
+    
+    self.tableView.scrollEnabled = NO;
+    
+    self.overlayView = [[UIView alloc] init];
+    self.overlayView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+    self.overlayView.frame = self.tableView.bounds;
+    
+    [self configureImageView:img];
+    [self.overlayView addSubview:self.overlayImageView];
+    
+    UITapGestureRecognizer *singleFingerTap =
+    [[UITapGestureRecognizer alloc] initWithTarget:self
+                                            action:@selector(handleSingleTap:)];
+    [self.overlayView addGestureRecognizer:singleFingerTap];
+    
+    [self.tableView addSubview:self.overlayView];
+    
+}
+
+-(void)closeImage{
+    self.tableView.scrollEnabled = YES;
+    [self.indicator stopAnimating];
+    [self.overlayView removeFromSuperview];
+    self.overlayImageView = nil;
+    imageShow = NO;
 }
 
 -(void)showImageNotificationHandler:(NSNotification *)notification{
@@ -276,45 +322,11 @@ static bool imageShow;
         HomeTimelineTweet *tw = notification.object;
         self.lastImageShowNotification = notification;
     
-        if (tw.mediaURL){
-        
-            imageShow = YES;
-        
-            self.tableView.scrollEnabled = NO;
-            self.navigationItem.rightBarButtonItem.enabled = NO;
-        
-            self.overlayView = [[UIView alloc] init];
-            self.overlayView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-            self.overlayView.frame = self.tableView.bounds;
-        
-        
-            if (tw.mediaImage){
-                [self configureImageView:tw];
-                [self.overlayView addSubview:self.overlayImageView];
-            
-            } else {
-                
-                CGRect frame = self.overlayView.frame;
-            
-                self.indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-            
-                self.indicator.center = CGPointMake(frame.size.width/2, frame.size.height/2);
-            
-                [self.overlayView addSubview:self.indicator];
-            
-                [self.indicator startAnimating];
-            }
-        
-            UITapGestureRecognizer *singleFingerTap =
-            [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                action:@selector(handleSingleTap:)];
-            [self.overlayView addGestureRecognizer:singleFingerTap];
-        
-            [self.tableView addSubview:self.overlayView];
-        
-        
-        }
-   
+    if (tw.mediaImage){
+        [self showImage:tw.mediaImage];
+    } else {
+        [self showLockView:YES];
+    }
 }
 
 @end
