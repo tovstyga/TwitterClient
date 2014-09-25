@@ -77,4 +77,22 @@
 
 #define SHOW_IMAGE_NOTIFICATION @"how image"
 
+//core data
+
+#define MODEL_EXTENSION @"momd"
+
+#define MODEL_NAME @"Model"
+
+#define DATA_BASE_NAME @"CoreData.sqlite"
+
+#define UNRESOLVED_ERROR @"Unresolved error %@, %@"
+
+#define TABLE_NAME @"Tweet"
+
+#define PREDICATE_FIELD_NAME @"tweetID = %@"
+
+#define PREDICATE_DATE_FIELD @"createdAt"
+
+//end core data
+
 @end

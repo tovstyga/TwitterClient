@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Tweet+Methods.h"
 
 @interface HomeTimelineTweet : NSObject
 
@@ -19,5 +20,7 @@
 @property (strong, nonatomic) NSString *tweetID;
 @property (strong, nonatomic) NSURL *mediaURL;
 @property (strong, nonatomic) UIImage *mediaImage;
+
+-(id)initWithTweetOnDataBase:(Tweet *)tweet;
 
 @end

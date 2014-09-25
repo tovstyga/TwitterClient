@@ -27,6 +27,12 @@
 		151DE0C319D0296F00BF8877 /* HomeTimelineTweetFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 151DE0C219D0296F00BF8877 /* HomeTimelineTweetFactory.m */; };
 		151DE0C619D04E2C00BF8877 /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 151DE0C519D04E2C00BF8877 /* WebViewController.m */; };
 		15558CF919D292F2005D9D76 /* TweetCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 15558CF819D292F2005D9D76 /* TweetCustomCell.m */; };
+		156B952D19D42527006F47A8 /* Tweet+Methods.m in Sources */ = {isa = PBXBuildFile; fileRef = 156B952C19D42527006F47A8 /* Tweet+Methods.m */; };
+		156B953019D43769006F47A8 /* EntityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 156B952F19D43769006F47A8 /* EntityManager.m */; };
+		15CB26C319D403CD00A351E1 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 15CB26C119D403CD00A351E1 /* Model.xcdatamodeld */; };
+		15CB26CA19D4089100A351E1 /* Tweet.m in Sources */ = {isa = PBXBuildFile; fileRef = 15CB26C919D4089100A351E1 /* Tweet.m */; };
+		15CB26CE19D40ABB00A351E1 /* DataBaseDirector.m in Sources */ = {isa = PBXBuildFile; fileRef = 15CB26CD19D40ABB00A351E1 /* DataBaseDirector.m */; };
+		15CB26D019D40F0800A351E1 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15CB26CF19D40F0800A351E1 /* CoreData.framework */; };
 		15EAD98019D160D20058CC4D /* UserTimelineTweetFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 15EAD97F19D160D20058CC4D /* UserTimelineTweetFactory.m */; };
 /* End PBXBuildFile section */
 
@@ -74,6 +80,16 @@
 		151DE0C519D04E2C00BF8877 /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewController.m; sourceTree = "<group>"; };
 		15558CF719D292F2005D9D76 /* TweetCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TweetCustomCell.h; path = View/TweetCustomCell.h; sourceTree = "<group>"; };
 		15558CF819D292F2005D9D76 /* TweetCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TweetCustomCell.m; path = View/TweetCustomCell.m; sourceTree = "<group>"; };
+		156B952B19D42527006F47A8 /* Tweet+Methods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Tweet+Methods.h"; sourceTree = "<group>"; };
+		156B952C19D42527006F47A8 /* Tweet+Methods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Tweet+Methods.m"; sourceTree = "<group>"; };
+		156B952E19D43769006F47A8 /* EntityManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EntityManager.h; sourceTree = "<group>"; };
+		156B952F19D43769006F47A8 /* EntityManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EntityManager.m; sourceTree = "<group>"; };
+		15CB26C219D403CD00A351E1 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		15CB26C819D4089100A351E1 /* Tweet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tweet.h; sourceTree = "<group>"; };
+		15CB26C919D4089100A351E1 /* Tweet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tweet.m; sourceTree = "<group>"; };
+		15CB26CC19D40ABB00A351E1 /* DataBaseDirector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataBaseDirector.h; sourceTree = "<group>"; };
+		15CB26CD19D40ABB00A351E1 /* DataBaseDirector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataBaseDirector.m; sourceTree = "<group>"; };
+		15CB26CF19D40F0800A351E1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		15EAD97E19D160D20058CC4D /* UserTimelineTweetFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserTimelineTweetFactory.h; path = "/Users/alex.tovstyga/Desktop/twitter client/TwitterClient/TwitterClient/Model/Factory/UserTimelineTweetFactory.h"; sourceTree = "<absolute>"; };
 		15EAD97F19D160D20058CC4D /* UserTimelineTweetFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UserTimelineTweetFactory.m; path = "/Users/alex.tovstyga/Desktop/twitter client/TwitterClient/TwitterClient/Model/Factory/UserTimelineTweetFactory.m"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
@@ -83,6 +99,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				15CB26D019D40F0800A351E1 /* CoreData.framework in Frameworks */,
 				15035B3119CAF5A400EF8B93 /* CoreGraphics.framework in Frameworks */,
 				15035B3319CAF5A400EF8B93 /* UIKit.framework in Frameworks */,
 				15035B2F19CAF5A400EF8B93 /* Foundation.framework in Frameworks */,
@@ -124,6 +141,7 @@
 		15035B2D19CAF5A400EF8B93 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				15CB26CF19D40F0800A351E1 /* CoreData.framework */,
 				15035B2E19CAF5A400EF8B93 /* Foundation.framework */,
 				15035B3019CAF5A400EF8B93 /* CoreGraphics.framework */,
 				15035B3219CAF5A400EF8B93 /* UIKit.framework */,
@@ -202,6 +220,7 @@
 		15BB803419CAF82300EC2143 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				15CB26CB19D409F600A351E1 /* CoreData */,
 				156DDE0219D18B29001C72D1 /* Factory */,
 				151DE0B619D018EC00BF8877 /* TwitterEntity */,
 				151DE0BA19D01DA500BF8877 /* ObjectsFactory.h */,
@@ -229,6 +248,30 @@
 				151DE0C519D04E2C00BF8877 /* WebViewController.m */,
 			);
 			path = Controller;
+			sourceTree = "<group>";
+		};
+		15CB26C419D4050C00A351E1 /* CoreDataEntity */ = {
+			isa = PBXGroup;
+			children = (
+				15CB26C819D4089100A351E1 /* Tweet.h */,
+				15CB26C919D4089100A351E1 /* Tweet.m */,
+				156B952B19D42527006F47A8 /* Tweet+Methods.h */,
+				156B952C19D42527006F47A8 /* Tweet+Methods.m */,
+			);
+			path = CoreDataEntity;
+			sourceTree = "<group>";
+		};
+		15CB26CB19D409F600A351E1 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				15CB26C419D4050C00A351E1 /* CoreDataEntity */,
+				15CB26CC19D40ABB00A351E1 /* DataBaseDirector.h */,
+				15CB26CD19D40ABB00A351E1 /* DataBaseDirector.m */,
+				15CB26C119D403CD00A351E1 /* Model.xcdatamodeld */,
+				156B952E19D43769006F47A8 /* EntityManager.h */,
+				156B952F19D43769006F47A8 /* EntityManager.m */,
+			);
+			path = CoreData;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -331,12 +374,17 @@
 				151DE0C319D0296F00BF8877 /* HomeTimelineTweetFactory.m in Sources */,
 				15035B4519CAF5A400EF8B93 /* ViewController.m in Sources */,
 				15558CF919D292F2005D9D76 /* TweetCustomCell.m in Sources */,
+				15CB26CA19D4089100A351E1 /* Tweet.m in Sources */,
 				15EAD98019D160D20058CC4D /* UserTimelineTweetFactory.m in Sources */,
 				15035B3F19CAF5A400EF8B93 /* AppDelegate.m in Sources */,
 				151DE0C619D04E2C00BF8877 /* WebViewController.m in Sources */,
+				15CB26CE19D40ABB00A351E1 /* DataBaseDirector.m in Sources */,
 				15035B3B19CAF5A400EF8B93 /* main.m in Sources */,
+				156B953019D43769006F47A8 /* EntityManager.m in Sources */,
 				151DE0B919D0198C00BF8877 /* SearchMetadata.m in Sources */,
 				151DE0B519D0117A00BF8877 /* DataLoader.m in Sources */,
+				15CB26C319D403CD00A351E1 /* Model.xcdatamodeld in Sources */,
+				156B952D19D42527006F47A8 /* Tweet+Methods.m in Sources */,
 				151DE0C019D023DE00BF8877 /* HomeTimelineTweet.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -552,6 +600,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		15CB26C119D403CD00A351E1 /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				15CB26C219D403CD00A351E1 /* Model.xcdatamodel */,
+			);
+			currentVersion = 15CB26C219D403CD00A351E1 /* Model.xcdatamodel */;
+			name = Model.xcdatamodeld;
+			path = ../../Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 15035B2319CAF5A400EF8B93 /* Project object */;
 }

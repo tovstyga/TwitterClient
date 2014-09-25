@@ -14,10 +14,10 @@
 #import "Constants.h"
 #import "AppDelegate.h"
 #import "TweetCustomCell.h"
+#import "EntityManager.h"
 
 @interface ViewController ()
 
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *swapButton;
 @property (strong, atomic) NSMutableArray *data;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) UIRefreshControl *refresh;
@@ -34,7 +34,6 @@
 
 @implementation ViewController
 
-static bool isUserTweetPage;
 static bool imageShow;
 
 - (void)viewDidLoad
@@ -44,8 +43,6 @@ static bool imageShow;
     
     
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
-    
-    _data = [[NSMutableArray alloc] init];
     
     self.actualURLString = HOME_TIMELINE_URL;
     
@@ -81,7 +78,10 @@ static bool imageShow;
                      action:@selector(refreshTable)
            forControlEvents:UIControlEventValueChanged];
     
+    
+    
     [self updateData];
+    
     
 	// Do any additional setup after loading the view, typically from a nib.
 }
@@ -115,6 +115,8 @@ static bool imageShow;
 }
 
 
+
+
 -(void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -134,38 +136,63 @@ static bool imageShow;
         dispatch_sync(dispatch_get_main_queue(), ^{
             NSMutableArray *newData = (NSMutableArray *)notification.object;
             if (newData.count > 0){
-                if (isUserTweetPage){
-                    self.data = newData;
-                } else {
-                    [newData addObjectsFromArray:self.data];
-                    self.data = newData;
-                }
-                
+              
+                [newData addObjectsFromArray:self.data];
+                self.data = newData;
+               
                 [self.tableView reloadData];
             }
             [self.refresh endRefreshing];
             [self closeLockView];
-          //  self.swapButton.enabled = YES;
+            
+            //save database
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                EntityManager *manager = [[EntityManager alloc] init];
+                if ([self.data count]){
+                    
+                    [manager saveHomeTimelineObjects:self.data];
+                }
+            });
+            
         });
+    
     
 }
 
 -(void)updateData{
+    
+    
     NSURL *requestAPI = [NSURL URLWithString:[self actualURLString]];
     
     id <ObjectsFactory> creater = nil;
     
-    if (isUserTweetPage) {
-        creater = [[UserTimelineTweetFactory alloc] init];
-    } else {
-        creater = [[HomeTimelineTweetFactory alloc] init];
+    creater = [[HomeTimelineTweetFactory alloc] init];
+    
+    if (self.data == nil){
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            EntityManager *manager = [[EntityManager alloc] init];
+            
+            NSArray *results = [manager loadObjects];
+            NSMutableArray *obj = [[NSMutableArray alloc] init];
+            for (int i = results.count-1; i >=0; i--){
+                [obj addObject:results[i]];
+
+            }
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:[[creater class] performSelector:@selector(notificationIdentifier)] object:obj];
+            
+        });
+        self.data = [[NSMutableArray alloc] init];
+        return;
     }
+
+    
     
     NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
     
     [parameters setObject:COUNT_VALUE forKey:COUNT];
     
-    if ((self.data.count > 0) && !isUserTweetPage) {
+    if (self.data.count > 0) {
         HomeTimelineTweet *tweet = [self.data firstObject];
         [parameters setObject:tweet.tweetID forKey:SINCE_ID];
     }
@@ -174,24 +201,6 @@ static bool imageShow;
 }
 
 - (void)refreshTable{
-    self.swapButton.enabled = NO;
-    [self updateData];
-}
-
-
-- (IBAction)swapBtnClic:(UIBarButtonItem *)sender {
-    if (!isUserTweetPage){
-        [self setTitle:USER_TWEET];
-        self.swapButton.title = HOME_PAGE;
-        self.actualURLString = USER_TIMELINE_URL;
-        isUserTweetPage = YES;
-    } else {
-        [self setTitle:HOME_PAGE];
-        self.swapButton.title = USER_TWEET;
-        self.actualURLString = HOME_TIMELINE_URL;
-        isUserTweetPage = NO;
-    }
-    self.swapButton.enabled = NO;
     [self updateData];
 }
 

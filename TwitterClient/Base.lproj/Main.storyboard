@@ -115,15 +115,8 @@
                             <constraint firstAttribute="trailing" secondItem="kVT-f4-su6" secondAttribute="trailing" id="i9E-Cg-ksn"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Home page" id="NVR-Wo-Dna">
-                        <barButtonItem key="rightBarButtonItem" enabled="NO" id="RBN-A4-LQn">
-                            <connections>
-                                <action selector="swapBtnClic:" destination="vXZ-lx-hvc" id="fdh-wQ-JEx"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Home page" id="NVR-Wo-Dna"/>
                     <connections>
-                        <outlet property="swapButton" destination="RBN-A4-LQn" id="VTq-DN-IWE"/>
                         <outlet property="tableView" destination="kVT-f4-su6" id="J3h-5C-WAJ"/>
                     </connections>
                 </viewController>

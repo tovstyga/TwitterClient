@@ -8,6 +8,7 @@
 
 #import "HomeTimelineTweet.h"
 #import "Constants.h"
+#import "Tweet.h"
 
 @interface HomeTimelineTweet()
 
@@ -18,6 +19,22 @@
 @implementation HomeTimelineTweet
 
 @synthesize profileImage = _profileImage;
+
+-(id)initWithTweetOnDataBase:(Tweet *)tweet{
+    self = [super init];
+    if (self){
+        _tweetID = tweet.tweetID;
+        _createdAt = tweet.createdAt;
+        _text = tweet.text;
+        _screenName = tweet.name;
+        _profileimageURL = [NSURL URLWithString:tweet.profileImageURL];
+        _mediaURL = [NSURL URLWithString:tweet.mediaURL];
+        _URLinfo = [NSURL URLWithString:tweet.infoURL];
+        _mediaImage = [UIImage imageWithData:tweet.mediaImage];
+        _profileImage = [UIImage imageWithData:tweet.profileImage];
+    }
+    return self;
+}
 
 -(UIImage *)profileImage{
     
