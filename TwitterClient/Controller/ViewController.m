@@ -9,7 +9,6 @@
 #import "ViewController.h"
 #import "DataLoader.h"
 #import "HomeTimelineTweetFactory.h"
-#import "UserTimelineTweetFactory.h"
 #import "HomeTimelineTweet.h"
 #import "Constants.h"
 #import "AppDelegate.h"
@@ -19,10 +18,13 @@
 @interface ViewController ()
 
 @property (strong, atomic) NSMutableArray *data;
+@property (strong, atomic) NSMutableArray *dublicateData;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) UIRefreshControl *refresh;
 @property (strong, atomic) NSString *actualURLString;
-
+@property (strong, nonatomic) NSString *searchString;
+@property (strong, nonatomic) UISearchBar *searchBar;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *searchButton;
 @property (strong, nonatomic) UIView *overlayView;
 @property (strong, nonatomic) UIView *overlayLockView;
 @property (strong, nonatomic) UIActivityIndicatorView *indicator;
@@ -35,6 +37,7 @@
 @implementation ViewController
 
 static bool imageShow;
+static bool barShow;
 
 - (void)viewDidLoad
 {
@@ -49,11 +52,6 @@ static bool imageShow;
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(dataLoadnotification:)
                                                  name:[HomeTimelineTweetFactory notificationIdentifier]
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(dataLoadnotification:)
-                                                 name:[UserTimelineTweetFactory notificationIdentifier]
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -111,11 +109,10 @@ static bool imageShow;
     
     tw = self.data[path.row];
     
+    if (barShow) [self closeSearchBar];
+    
     [(AppDelegate *)[[UIApplication sharedApplication] delegate] setTweet:tw];
 }
-
-
-
 
 -(void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -130,6 +127,17 @@ static bool imageShow;
         [self showImageNotificationHandler:self.lastImageShowNotification];
     }
     
+    if (barShow){
+        self.searchString = self.searchBar.text;
+        [self closeSearchBar];
+        if (self.searchString.length == 0){
+            self.searchString = nil;
+            return;
+        }
+            [self showSearchBar:[self searchString]];
+        
+    }
+    
 }
 
 -(void)dataLoadnotification:(NSNotification *)notification{
@@ -138,6 +146,7 @@ static bool imageShow;
             if (newData.count > 0){
               
                 [newData addObjectsFromArray:self.data];
+    
                 self.data = newData;
                
                 [self.tableView reloadData];
@@ -201,7 +210,11 @@ static bool imageShow;
 }
 
 - (void)refreshTable{
-    [self updateData];
+    if (barShow){
+        [self.refresh endRefreshing];
+    } else {
+        [self updateData];
+    }
 }
 
 
@@ -263,7 +276,7 @@ static bool imageShow;
 }
 
 -(void)showLockView:(bool)closeTap{
-    
+    if (barShow) [self closeSearchBar];
     imageShow = YES;
     
     self.tableView.scrollEnabled = NO;
@@ -298,6 +311,8 @@ static bool imageShow;
 }
 
 -(void)showImage:(UIImage *)img{
+    if (barShow) [self closeSearchBar];
+    
     imageShow = YES;
     
     self.tableView.scrollEnabled = NO;
@@ -335,6 +350,76 @@ static bool imageShow;
         [self showImage:tw.mediaImage];
     } else {
         [self showLockView:YES];
+    }
+}
+
+#pragma mark search
+
+- (IBAction)searchButtonClick:(UIBarButtonItem *)sender {
+    
+    if (self.searchBar){
+        [self closeSearchBar];
+        
+    } else {
+        [self showSearchBar:nil];
+        self.dublicateData = [self.data mutableCopy];
+    }
+}
+
+-(void)showSearchBar:(NSString *)searchTerm{
+    
+    barShow = YES;
+    CGRect frame = [self.navigationController.navigationBar frame];
+    
+    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, frame.size.width - frame.size.height, frame.size.height)];
+    self.searchBar.backgroundColor = [UIColor grayColor];
+    self.searchBar.delegate = self;
+    [self.navigationController.navigationBar addSubview:self.searchBar];
+    self.searchBar.text = self.searchString;
+    if (self.searchString)
+        [self handlesearchForTerm:self.searchString];
+    self.searchString = nil;
+    
+}
+
+-(void)closeSearchBar{
+    barShow = NO;
+    [self.searchBar removeFromSuperview];
+    self.searchBar = nil;
+    self.data = [self.dublicateData mutableCopy];
+    [self.tableView reloadData];
+}
+
+-(void)handlesearchForTerm:(NSString *)term{
+    self.data = [self.dublicateData mutableCopy];
+    
+    NSMutableArray *cellsToRemove = [[NSMutableArray alloc] init];
+    
+    for (HomeTimelineTweet *tweet in self.data){
+        if ([tweet.text rangeOfString:term options:NSCaseInsensitiveSearch].location == NSNotFound){
+            [cellsToRemove addObject:tweet];
+        }
+    }
+
+    [self.data removeObjectsInArray:cellsToRemove];
+    [self.tableView reloadData];
+
+}
+
+-(void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
+
+    NSString *searchTerm = searchBar.text;
+    [self handlesearchForTerm:searchTerm];
+    [searchBar resignFirstResponder];
+    
+}
+
+-(void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
+    if (searchText.length == 0){
+        self.data = [self.dublicateData mutableCopy];
+        [self.tableView reloadData];
+    } else {
+        [self handlesearchForTerm:searchText];
     }
 }
 
