@@ -116,7 +116,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Home page" id="NVR-Wo-Dna">
-                        <barButtonItem key="rightBarButtonItem" systemItem="search" id="cvE-N7-61v">
+                        <barButtonItem key="rightBarButtonItem" enabled="NO" systemItem="search" id="cvE-N7-61v">
                             <connections>
                                 <action selector="searchButtonClick:" destination="vXZ-lx-hvc" id="Fu5-PF-m48"/>
                             </connections>

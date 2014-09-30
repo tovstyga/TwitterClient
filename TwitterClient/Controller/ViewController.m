@@ -17,14 +17,20 @@
 
 @interface ViewController ()
 
+
+@property (nonatomic, strong) UIView *searchView;
+@property (nonatomic, strong) UIDynamicAnimator *animator;
+
 @property (strong, atomic) NSMutableArray *data;
 @property (strong, atomic) NSMutableArray *dublicateData;
+
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) UIRefreshControl *refresh;
 @property (strong, atomic) NSString *actualURLString;
-@property (strong, nonatomic) NSString *searchString;
+
 @property (strong, nonatomic) UISearchBar *searchBar;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *searchButton;
+
 @property (strong, nonatomic) UIView *overlayView;
 @property (strong, nonatomic) UIView *overlayLockView;
 @property (strong, nonatomic) UIActivityIndicatorView *indicator;
@@ -39,8 +45,8 @@
 static bool imageShow;
 static bool barShow;
 
-- (void)viewDidLoad
-{
+#pragma mark LifeCycle
+- (void)viewDidLoad{
     [super viewDidLoad];
     
     
@@ -80,25 +86,35 @@ static bool barShow;
     
     [self updateData];
     
+    self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.navigationController.navigationBar];
+    
     
 	// Do any additional setup after loading the view, typically from a nib.
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     
+    if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)){
+        [self.navigationItem.rightBarButtonItem setEnabled:NO];
+    } else {
+        [self.navigationItem.rightBarButtonItem setEnabled:YES];
+        //[self initSearchView];
+    }
+    
     [super viewWillAppear:animated];
-   if (self.overlayLockView == nil)
+    if (self.overlayLockView == nil){
        [self showLockView:NO];
+    }
+    
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning{
+   
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
    
     
     HomeTimelineTweet *tw = nil;
@@ -109,7 +125,7 @@ static bool barShow;
     
     tw = self.data[path.row];
     
-    if (barShow) [self closeSearchBar];
+    if (barShow) [self toggleSearchBar];
     
     [(AppDelegate *)[[UIApplication sharedApplication] delegate] setTweet:tw];
 }
@@ -118,30 +134,37 @@ static bool barShow;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void) orientationChanged:(NSNotification *)note
-{
- 
+#pragma mark Orientation
+- (void) orientationChanged:(NSNotification *)note{
+  
     if ((self.lastImageShowNotification) && (imageShow)){
-      
         [self closeImage];
         [self showImageNotificationHandler:self.lastImageShowNotification];
     }
     
     if (barShow){
-        self.searchString = self.searchBar.text;
-        [self closeSearchBar];
-        if (self.searchString.length == 0){
-            self.searchString = nil;
-            return;
-        }
-            [self showSearchBar:[self searchString]];
-        
+        [self toggleSearchBar];
+    }
+    
+    
+}
+
+-(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation{
+    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    
+    if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)){
+        [self.navigationItem.rightBarButtonItem setEnabled:NO];
+    } else {
+        [self.navigationItem.rightBarButtonItem setEnabled:YES];
     }
     
 }
 
+#pragma mark Data
 -(void)dataLoadnotification:(NSNotification *)notification{
         dispatch_sync(dispatch_get_main_queue(), ^{
+            
+            
             NSMutableArray *newData = (NSMutableArray *)notification.object;
             if (newData.count > 0){
               
@@ -162,7 +185,7 @@ static bool barShow;
                     [manager saveHomeTimelineObjects:self.data];
                 }
             });
-            
+            self.navigationItem.rightBarButtonItem.enabled = YES;
         });
     
     
@@ -170,6 +193,7 @@ static bool barShow;
 
 -(void)updateData{
     
+    self.navigationItem.rightBarButtonItem.enabled = NO;
     
     NSURL *requestAPI = [NSURL URLWithString:[self actualURLString]];
     
@@ -219,21 +243,18 @@ static bool barShow;
 
 
 #pragma mark UITableView methods
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return 1;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     // Return the number of rows in the section.
     
     return [self.data count];
     
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     TweetCustomCell *cell = [tableView dequeueReusableCellWithIdentifier:CELL_IDENTIFIER forIndexPath:indexPath];
     HomeTimelineTweet *tweet = [self.data objectAtIndex:[indexPath row]];
@@ -248,9 +269,7 @@ static bool barShow;
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
-
 #pragma mark Show Image Methods
-
 -(void)mediaLoadnotification:(NSNotification *)notification{
     
     [self closeLockView];
@@ -276,8 +295,10 @@ static bool barShow;
 }
 
 -(void)showLockView:(bool)closeTap{
-    if (barShow) [self closeSearchBar];
+    if (barShow) [self.searchBar resignFirstResponder];
     imageShow = YES;
+    
+    self.navigationItem.rightBarButtonItem.enabled = NO;
     
     self.tableView.scrollEnabled = NO;
 
@@ -304,6 +325,7 @@ static bool barShow;
 }
 
 -(void)closeLockView{
+    self.navigationItem.rightBarButtonItem.enabled = YES;
     self.tableView.scrollEnabled = YES;
     [self.indicator stopAnimating];
     [self.overlayLockView removeFromSuperview];
@@ -311,7 +333,9 @@ static bool barShow;
 }
 
 -(void)showImage:(UIImage *)img{
-    if (barShow) [self closeSearchBar];
+    if (barShow) [self.searchBar resignFirstResponder];
+    
+    self.navigationItem.rightBarButtonItem.enabled = NO;
     
     imageShow = YES;
     
@@ -334,6 +358,7 @@ static bool barShow;
 }
 
 -(void)closeImage{
+    self.navigationItem.rightBarButtonItem.enabled = YES;
     self.tableView.scrollEnabled = YES;
     [self.indicator stopAnimating];
     [self.overlayView removeFromSuperview];
@@ -353,41 +378,25 @@ static bool barShow;
     }
 }
 
-#pragma mark search
+#pragma mark Search
+
+-(void)toggleSearchBar{
+    if (barShow){
+        [self toggleSearch:NO];
+        barShow = NO;
+        self.data = [self.dublicateData mutableCopy];
+        [self.tableView reloadData];
+    } else {
+        self.dublicateData = [self.data mutableCopy];
+        [self toggleSearch:YES];
+        barShow = YES;
+    }
+    
+    [self.searchBar resignFirstResponder];
+}
 
 - (IBAction)searchButtonClick:(UIBarButtonItem *)sender {
-    
-    if (self.searchBar){
-        [self closeSearchBar];
-        
-    } else {
-        [self showSearchBar:nil];
-        self.dublicateData = [self.data mutableCopy];
-    }
-}
-
--(void)showSearchBar:(NSString *)searchTerm{
-    
-    barShow = YES;
-    CGRect frame = [self.navigationController.navigationBar frame];
-    
-    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, frame.size.width - frame.size.height, frame.size.height)];
-    self.searchBar.backgroundColor = [UIColor grayColor];
-    self.searchBar.delegate = self;
-    [self.navigationController.navigationBar addSubview:self.searchBar];
-    self.searchBar.text = self.searchString;
-    if (self.searchString)
-        [self handlesearchForTerm:self.searchString];
-    self.searchString = nil;
-    
-}
-
--(void)closeSearchBar{
-    barShow = NO;
-    [self.searchBar removeFromSuperview];
-    self.searchBar = nil;
-    self.data = [self.dublicateData mutableCopy];
-    [self.tableView reloadData];
+    [self toggleSearchBar];
 }
 
 -(void)handlesearchForTerm:(NSString *)term{
@@ -408,6 +417,8 @@ static bool barShow;
 
 -(void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
 
+    
+    
     NSString *searchTerm = searchBar.text;
     [self handlesearchForTerm:searchTerm];
     [searchBar resignFirstResponder];
@@ -421,6 +432,72 @@ static bool barShow;
     } else {
         [self handlesearchForTerm:searchText];
     }
+}
+
+- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar{
+    [self closeImage];
+    [self closeLockView];
+    return YES;
+}
+
+#pragma mark Animation
+
+-(void)initSearchView{
+    
+    CGRect frame = [self.navigationController.navigationBar frame];
+    
+    self.searchView = [[UIView alloc] initWithFrame:CGRectMake(-(frame.size.width - frame.size.height),
+                                                             0,
+                                                             frame.size.width - frame.size.height,
+                                                             frame.size.height)];
+    
+    self.searchView.backgroundColor = [UIColor colorWithRed:0.2 green:0.2 blue:0.2 alpha:1.0];
+    [self.navigationController.navigationBar addSubview:self.searchView];
+    
+    self.searchBar = [[UISearchBar alloc] initWithFrame:self.searchView.bounds];
+    self.searchBar.backgroundColor = [UIColor grayColor];
+
+    self.searchBar.delegate = self;
+    [self.searchView addSubview:self.searchBar];
+    
+}
+
+-(void)toggleSearch:(BOOL)shouldOpenSearch{
+
+    [self.animator removeAllBehaviors];
+    
+    if (shouldOpenSearch){
+        [self initSearchView];
+    }
+    
+    CGRect frame = [self.navigationController.navigationBar frame];
+    
+    CGFloat gravityDirectionX = (shouldOpenSearch) ? 1.0 : -1.0;
+    CGFloat pushMagnitude = (shouldOpenSearch) ? 5.0 : -5.0;
+    CGFloat boundaryPointX = (shouldOpenSearch) ? frame.size.width - frame.size.height : -(frame.size.width - frame.size.height);
+    
+    UIGravityBehavior *gravityBehavior = [[UIGravityBehavior alloc] initWithItems:@[self.searchView]];
+    gravityBehavior.gravityDirection = CGVectorMake(gravityDirectionX, 0.0);
+    [self.animator addBehavior:gravityBehavior];
+    
+    
+    UICollisionBehavior *collisionBehavior = [[UICollisionBehavior alloc] initWithItems:@[self.searchView]];
+    [collisionBehavior addBoundaryWithIdentifier:@"searchBoundary"
+                                       fromPoint:CGPointMake(boundaryPointX, 20.0)
+                                         toPoint:CGPointMake(boundaryPointX, frame.size.height)];
+    [self.animator addBehavior:collisionBehavior];
+    
+    
+    UIPushBehavior *pushBehavior = [[UIPushBehavior alloc] initWithItems:@[self.searchView]
+                                                                    mode:UIPushBehaviorModeInstantaneous];
+    pushBehavior.magnitude = pushMagnitude;
+    [self.animator addBehavior:pushBehavior];
+    
+    
+    UIDynamicItemBehavior *searchViewBehavior = [[UIDynamicItemBehavior alloc] initWithItems:@[self.searchView]];
+    searchViewBehavior.elasticity = 0.4;
+    [self.animator addBehavior:searchViewBehavior];
+    
 }
 
 @end
