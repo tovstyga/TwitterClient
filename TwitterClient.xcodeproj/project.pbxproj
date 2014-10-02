@@ -26,6 +26,9 @@
 		151DE0C019D023DE00BF8877 /* HomeTimelineTweet.m in Sources */ = {isa = PBXBuildFile; fileRef = 151DE0BF19D023DE00BF8877 /* HomeTimelineTweet.m */; };
 		151DE0C319D0296F00BF8877 /* HomeTimelineTweetFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 151DE0C219D0296F00BF8877 /* HomeTimelineTweetFactory.m */; };
 		151DE0C619D04E2C00BF8877 /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 151DE0C519D04E2C00BF8877 /* WebViewController.m */; };
+		155384AF19DC1BCC0064747C /* ImageWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 155384AE19DC1BCC0064747C /* ImageWindow.m */; };
+		155384B519DC46E00064747C /* CustomSearchBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 155384B419DC46E00064747C /* CustomSearchBar.m */; };
+		155384B819DC4C2A0064747C /* SearchBarDelegat.m in Sources */ = {isa = PBXBuildFile; fileRef = 155384B719DC4C2A0064747C /* SearchBarDelegat.m */; };
 		15558CF919D292F2005D9D76 /* TweetCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 15558CF819D292F2005D9D76 /* TweetCustomCell.m */; };
 		156B952D19D42527006F47A8 /* Tweet+Methods.m in Sources */ = {isa = PBXBuildFile; fileRef = 156B952C19D42527006F47A8 /* Tweet+Methods.m */; };
 		156B953019D43769006F47A8 /* EntityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 156B952F19D43769006F47A8 /* EntityManager.m */; };
@@ -78,6 +81,12 @@
 		151DE0C219D0296F00BF8877 /* HomeTimelineTweetFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeTimelineTweetFactory.m; sourceTree = "<group>"; };
 		151DE0C419D04E2C00BF8877 /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewController.h; sourceTree = "<group>"; };
 		151DE0C519D04E2C00BF8877 /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewController.m; sourceTree = "<group>"; };
+		155384AD19DC1BCC0064747C /* ImageWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImageWindow.h; path = View/ImageWindow.h; sourceTree = "<group>"; };
+		155384AE19DC1BCC0064747C /* ImageWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ImageWindow.m; path = View/ImageWindow.m; sourceTree = "<group>"; };
+		155384B319DC46E00064747C /* CustomSearchBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CustomSearchBar.h; path = View/CustomSearchBar.h; sourceTree = "<group>"; };
+		155384B419DC46E00064747C /* CustomSearchBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CustomSearchBar.m; path = View/CustomSearchBar.m; sourceTree = "<group>"; };
+		155384B619DC4C2A0064747C /* SearchBarDelegat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchBarDelegat.h; sourceTree = "<group>"; };
+		155384B719DC4C2A0064747C /* SearchBarDelegat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchBarDelegat.m; sourceTree = "<group>"; };
 		15558CF719D292F2005D9D76 /* TweetCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TweetCustomCell.h; path = View/TweetCustomCell.h; sourceTree = "<group>"; };
 		15558CF819D292F2005D9D76 /* TweetCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TweetCustomCell.m; path = View/TweetCustomCell.m; sourceTree = "<group>"; };
 		156B952B19D42527006F47A8 /* Tweet+Methods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Tweet+Methods.h"; sourceTree = "<group>"; };
@@ -217,6 +226,17 @@
 			path = Factory;
 			sourceTree = "<group>";
 		};
+		15B143D719DD1FFF000AD204 /* MainView */ = {
+			isa = PBXGroup;
+			children = (
+				155384B619DC4C2A0064747C /* SearchBarDelegat.h */,
+				155384B719DC4C2A0064747C /* SearchBarDelegat.m */,
+				15035B4319CAF5A400EF8B93 /* ViewController.h */,
+				15035B4419CAF5A400EF8B93 /* ViewController.m */,
+			);
+			path = MainView;
+			sourceTree = "<group>";
+		};
 		15BB803419CAF82300EC2143 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -233,6 +253,10 @@
 			children = (
 				15558CF719D292F2005D9D76 /* TweetCustomCell.h */,
 				15558CF819D292F2005D9D76 /* TweetCustomCell.m */,
+				155384AD19DC1BCC0064747C /* ImageWindow.h */,
+				155384AE19DC1BCC0064747C /* ImageWindow.m */,
+				155384B319DC46E00064747C /* CustomSearchBar.h */,
+				155384B419DC46E00064747C /* CustomSearchBar.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -240,8 +264,7 @@
 		15BB803619CAF83900EC2143 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				15035B4319CAF5A400EF8B93 /* ViewController.h */,
-				15035B4419CAF5A400EF8B93 /* ViewController.m */,
+				15B143D719DD1FFF000AD204 /* MainView */,
 				151DE0B319D0117A00BF8877 /* DataLoader.h */,
 				151DE0B419D0117A00BF8877 /* DataLoader.m */,
 				151DE0C419D04E2C00BF8877 /* WebViewController.h */,
@@ -374,11 +397,14 @@
 				151DE0C319D0296F00BF8877 /* HomeTimelineTweetFactory.m in Sources */,
 				15035B4519CAF5A400EF8B93 /* ViewController.m in Sources */,
 				15558CF919D292F2005D9D76 /* TweetCustomCell.m in Sources */,
+				155384AF19DC1BCC0064747C /* ImageWindow.m in Sources */,
+				155384B819DC4C2A0064747C /* SearchBarDelegat.m in Sources */,
 				15CB26CA19D4089100A351E1 /* Tweet.m in Sources */,
 				15EAD98019D160D20058CC4D /* UserTimelineTweetFactory.m in Sources */,
 				15035B3F19CAF5A400EF8B93 /* AppDelegate.m in Sources */,
 				151DE0C619D04E2C00BF8877 /* WebViewController.m in Sources */,
 				15CB26CE19D40ABB00A351E1 /* DataBaseDirector.m in Sources */,
+				155384B519DC46E00064747C /* CustomSearchBar.m in Sources */,
 				15035B3B19CAF5A400EF8B93 /* main.m in Sources */,
 				156B953019D43769006F47A8 /* EntityManager.m in Sources */,
 				151DE0B919D0198C00BF8877 /* SearchMetadata.m in Sources */,

@@ -51,6 +51,8 @@
 
 #define MEDIA_LOADED_NOTIFICATION @"media loaded"
 
+#define DATA_CHANGE_NOTIFICATION @"data change"
+
 // param
 
 #define COUNT @"count"

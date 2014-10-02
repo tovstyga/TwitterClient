@@ -18,6 +18,7 @@
 @property (strong, nonatomic) NSTimer *timer;
 
 
+
 @end
 
 @implementation WebViewController
@@ -35,9 +36,9 @@
 {
     [super viewDidLoad];
     
-   
     
     HomeTimelineTweet *tweet = [(AppDelegate *)[[UIApplication sharedApplication] delegate] tweet];
+
     
     self.title = tweet.screenName;
     
@@ -100,5 +101,6 @@
         self.timer = nil;
     }
 }
+
 
 @end
